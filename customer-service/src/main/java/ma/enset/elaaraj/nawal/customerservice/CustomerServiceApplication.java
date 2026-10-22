@@ -1,7 +1,10 @@
 package ma.enset.elaaraj.nawal.customerservice;
 
 import ma.enset.elaaraj.nawal.customerservice.entities.Customer;
+import ma.enset.elaaraj.nawal.customerservice.mcp.CustomerMcpTools;
 import ma.enset.elaaraj.nawal.customerservice.repository.CustomerRepository;
+import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,5 +29,13 @@ public class CustomerServiceApplication {
             customerRepository.save(Customer.builder()
                     .name("Yassine").email("yassine@gmail.com").build());
         };
+    }
+
+    // Enregistre les méthodes @Tool de CustomerMcpTools comme outils du serveur MCP
+    @Bean
+    ToolCallbackProvider customerTools(CustomerMcpTools customerMcpTools) {
+        return MethodToolCallbackProvider.builder()
+                .toolObjects(customerMcpTools)
+                .build();
     }
 }
