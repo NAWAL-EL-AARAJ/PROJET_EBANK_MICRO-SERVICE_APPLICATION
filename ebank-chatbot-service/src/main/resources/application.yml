@@ -10,6 +10,9 @@ spring:
     config:
       enabled: false
   ai:
+    # 2 tentatives max vers le LLM : si Ollama est arrêté, /chat échoue vite au lieu de bloquer
+    retry:
+      max-attempts: 2
     # LLM local servi par Ollama (lancer avant : ollama pull qwen3:8b)
     ollama:
       base-url: http://localhost:11434
