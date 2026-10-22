@@ -30,8 +30,12 @@ spring:
       base-url: https://api.groq.com/openai/v1
       api-key: ${GROQ_API_KEY:}
       chat:
-        model: ${GROQ_MODEL:llama-3.3-70b-versatile}
+        model: ${GROQ_MODEL:openai/gpt-oss-120b}
         temperature: 0.2
+        # Paramètre propre à Groq : ne pas renvoyer le raisonnement du modèle
+        # (sinon Spring AI le renverrait à Groq à l'étape suivante, qui le refuse)
+        extra-body:
+          include_reasoning: false
     # LLM local servi par Ollama (lancer avant : ollama pull qwen3:8b)
     ollama:
       base-url: http://localhost:11434
