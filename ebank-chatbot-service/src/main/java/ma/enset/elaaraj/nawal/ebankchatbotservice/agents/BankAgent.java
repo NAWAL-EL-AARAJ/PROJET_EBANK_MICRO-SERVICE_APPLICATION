@@ -25,7 +25,10 @@ public class BankAgent {
             Les montants sont en dirhams (MAD), arrondis à deux décimales.
             Si la question ne concerne pas la banque, réponds poliment que tu es limité aux
             informations sur les clients et les comptes bancaires.
+            /no_think
             """;
+    // "/no_think" : interrupteur de Qwen3 qui désactive le raisonnement (<think>...</think>),
+    // ce qui rend les réponses beaucoup plus rapides sur un PC sans carte graphique.
 
     private final ChatClient chatClient;
 
@@ -54,10 +57,21 @@ public class BankAgent {
      * @return la réponse générée par le LLM
      */
     public String askAgent(String chatId, String question) {
-        return chatClient.prompt()
+        String answer = chatClient.prompt()
                 .user(question)
                 .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, chatId))
                 .call()
                 .content();
+        return removeReasoning(answer);
+    }
+
+    /**
+     * Certains modèles (ex : qwen3) écrivent leur raisonnement avant la balise </think>.
+     * On ne garde que la réponse finale destinée à l'utilisateur.
+     */
+    private String removeReasoning(String answer) {
+        if (answer == null) return null;
+        int end = answer.lastIndexOf("</think>");
+        return end >= 0 ? answer.substring(end + "</think>".length()).trim() : answer.trim();
     }
 }
