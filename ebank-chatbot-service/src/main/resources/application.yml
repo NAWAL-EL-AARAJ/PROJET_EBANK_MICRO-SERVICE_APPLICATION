@@ -10,9 +10,28 @@ spring:
     config:
       enabled: false
   ai:
+    # Choix du LLM : "ollama" (local, par défaut) ou "openai" (API compatible OpenAI, ici Groq)
+    # Exemple : $env:LLM_PROVIDER = "openai" avant de lancer l'application
+    model:
+      chat: ${LLM_PROVIDER:ollama}
+      # on n'utilise que le chat : on désactive les autres modèles (embedding, image, audio...)
+      embedding: none
+      image: none
+      audio:
+        speech: none
+        transcription: none
+      moderation: none
     # 2 tentatives max vers le LLM : si Ollama est arrêté, /chat échoue vite au lieu de bloquer
     retry:
       max-attempts: 2
+    # LLM en ligne Groq (gratuit, rapide) via l'API compatible OpenAI.
+    # La clé est lue UNIQUEMENT depuis la variable d'environnement GROQ_API_KEY.
+    openai:
+      base-url: https://api.groq.com/openai/v1
+      api-key: ${GROQ_API_KEY:}
+      chat:
+        model: ${GROQ_MODEL:llama-3.3-70b-versatile}
+        temperature: 0.2
     # LLM local servi par Ollama (lancer avant : ollama pull qwen3:8b)
     ollama:
       base-url: http://localhost:11434
