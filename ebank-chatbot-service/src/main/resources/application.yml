@@ -1,0 +1,52 @@
+server:
+  port: 8058
+
+spring:
+  application:
+    name: ebank-chatbot-service
+  cloud:
+    discovery:
+      enabled: true
+    config:
+      enabled: false
+  ai:
+    # LLM local servi par Ollama (lancer avant : ollama pull qwen3:8b)
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: qwen3:8b
+        temperature: 0.2
+        # désactive le "raisonnement" (<think>...</think>) de qwen3 pour des réponses directes
+        think: false
+    # Client MCP : récupère les outils exposés par les deux microservices
+    mcp:
+      client:
+        name: ebank-chatbot-mcp-client
+        version: 1.0.0
+        type: SYNC
+        request-timeout: 60s
+        streamable-http:
+          connections:
+            customer-service:
+              url: http://localhost:8056
+              endpoint: /mcp
+            ebank-service:
+              url: http://localhost:8057
+              endpoint: /mcp
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+# Token du bot Telegram : lu UNIQUEMENT depuis la variable d'environnement TELEGRAM_BOT_TOKEN.
+# Si elle est absente, le bot Telegram ne démarre pas (le endpoint /chat reste utilisable).
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
