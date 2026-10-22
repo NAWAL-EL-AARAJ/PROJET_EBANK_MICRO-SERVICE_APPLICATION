@@ -1,7 +1,10 @@
 package ma.enset.elaaraj.nawal.ebankservice;
 
 import ma.enset.elaaraj.nawal.ebankservice.entities.BankAccount;
+import ma.enset.elaaraj.nawal.ebankservice.mcp.EbankMcpTools;
 import ma.enset.elaaraj.nawal.ebankservice.services.EbankService;
+import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,5 +34,13 @@ public class EbankServiceApplication {
 
         };
 
+    }
+
+    // Enregistre les méthodes @Tool de EbankMcpTools comme outils du serveur MCP
+    @Bean
+    ToolCallbackProvider ebankTools(EbankMcpTools ebankMcpTools) {
+        return MethodToolCallbackProvider.builder()
+                .toolObjects(ebankMcpTools)
+                .build();
     }
 }
