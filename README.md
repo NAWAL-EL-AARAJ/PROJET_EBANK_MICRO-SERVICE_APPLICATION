@@ -92,7 +92,7 @@ des réponses de l'agent.
 ## Captures d'écran
 
 Captures réalisées avec tous les services lancés (images dans le dossier `captures/`).
-Pour les captures encore manquantes (H2, circuit breaker, Telegram), enregistrer l'image
+Pour les captures encore manquantes (H2, Telegram), enregistrer l'image
 dans `captures/` avec le nom indiqué puis décommenter la ligne correspondante.
 
 ### 1. Eureka — services enregistrés
@@ -145,7 +145,7 @@ Arrêter **customer-service**, puis rouvrir :
 
 À voir : `"customer": {"name": "NoName", "email": "noEmail"}` au lieu d'une erreur 500.
 
-<!-- ![Fallback circuit breaker](captures/09-circuit-breaker-fallback.png) -->
+![Fallback circuit breaker](captures/09-circuit-breaker-fallback.png)
 
 > Relancer customer-service ensuite (et attendre ~30 s qu'il réapparaisse dans Eureka).
 
