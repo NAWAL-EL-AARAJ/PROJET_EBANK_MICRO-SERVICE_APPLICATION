@@ -20,8 +20,8 @@ et qui répond en REST et sur **Telegram**.
                 │customer-    │ │ebank-     │ │ebank-chatbot-service  │◄───►│ Telegram │
                 │service :8056│ │service    │ │:8058                  │     └──────────┘
                 │             │◄┤:8057      │ │ BankAgent (ChatClient)│
-                │ MCP /mcp    │ │ MCP /mcp  │ │ + mémoire par chatId  │────► Ollama :11434
-                └──────▲──────┘ └─────▲─────┘ └───────────┬───────────┘      (qwen3:8b)
+                │ MCP /mcp    │ │ MCP /mcp  │ │ + mémoire par chatId  │────► LLM : Ollama :11434 (qwen3:8b)
+                └──────▲──────┘ └─────▲─────┘ └───────────┬───────────┘      ou Groq (gpt-oss-120b)
                        │   Feign +    │                   │
                        │   CircuitBreaker                 │
                        └──────────────┴───── MCP Streamable HTTP ──┘
@@ -32,7 +32,7 @@ et qui répond en REST et sur **Telegram**.
 | `DISCOVERY-SERVICE` | 8761 | Annuaire Eureka |
 | `customer-service` | 8056 | Gestion des clients (JPA/H2) + serveur MCP |
 | `ebank-service` | 8057 | Comptes bancaires (JPA/H2), appelle customer-service via OpenFeign + Resilience4j, serveur MCP |
-| `ebank-chatbot-service` | 8058 | Agent IA (Spring AI + Ollama), client MCP, REST `/chat` et bot Telegram |
+| `ebank-chatbot-service` | 8058 | Agent IA (Spring AI + Ollama ou Groq), client MCP, REST `/chat` et bot Telegram |
 | `gateway-service` | 9999 | Point d'entrée unique, routes automatiques via Eureka |
 
 ### Outils MCP exposés
@@ -47,14 +47,19 @@ et qui répond en REST et sur **Telegram**.
 ## Prérequis
 
 - Java 21
-- [Ollama](https://ollama.com/download) avec le modèle : `ollama pull qwen3:8b`
+- Un LLM, au choix :
+  - **Ollama** (local, par défaut) : [Ollama](https://ollama.com/download) avec le modèle `ollama pull qwen3:8b`
+  - **Groq** (en ligne, gratuit, plus rapide) : une clé API créée sur [console.groq.com](https://console.groq.com/keys)
 - (optionnel) un bot Telegram créé avec [@BotFather](https://t.me/BotFather)
 
 ## Lancement (dans cet ordre)
 
 ```powershell
-# 1. Ollama doit tourner (http://localhost:11434)
+# 1. LLM : Ollama doit tourner (http://localhost:11434)...
 ollama pull qwen3:8b
+#    ...ou bien Groq (dans le terminal du chatbot, avant l'étape 5)
+$env:LLM_PROVIDER = "openai"
+$env:GROQ_API_KEY = "<clé Groq>"               # jamais commitée
 
 # 2. Eureka
 cd DISCOVERY-SERVICE;      .\mvnw spring-boot:run
@@ -70,6 +75,17 @@ cd gateway-service;        .\mvnw spring-boot:run
 ```
 
 > Sans `TELEGRAM_BOT_TOKEN`, le bot Telegram est simplement désactivé ; `/chat` reste utilisable.
+
+### Choix du LLM
+
+| Variable | Valeur par défaut | Rôle |
+|---|---|---|
+| `LLM_PROVIDER` | `ollama` | `ollama` = LLM local ; `openai` = API compatible OpenAI (Groq) |
+| `GROQ_API_KEY` | *(vide)* | Clé Groq, obligatoire si `LLM_PROVIDER=openai` |
+| `GROQ_MODEL` | `openai/gpt-oss-120b` | Modèle Groq utilisé (optionnel) |
+
+Le raisonnement interne des modèles (`<think>` de qwen3, `reasoning` de gpt-oss) est retiré
+des réponses de l'agent.
 
 ---
 
@@ -195,6 +211,8 @@ par exemple *« Liste les comptes du client 2 »*.
 
 ## Sécurité
 
+- La clé Groq est lue uniquement depuis la variable d'environnement `GROQ_API_KEY`
+  (`${GROQ_API_KEY:}`), jamais écrite dans le code.
 - Le token Telegram est lu uniquement depuis la variable d'environnement `TELEGRAM_BOT_TOKEN`
   (`application.yml` : `${TELEGRAM_BOT_TOKEN:}`) et masqué dans les logs.
 - `.env` est ignoré par Git.
