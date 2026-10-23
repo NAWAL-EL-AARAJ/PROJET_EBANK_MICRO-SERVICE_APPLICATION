@@ -91,8 +91,9 @@ des réponses de l'agent.
 
 ## Captures d'écran
 
-Ouvrir chaque lien, faire la capture et l'enregistrer dans le dossier `captures/`
-avec le nom indiqué : l'image s'affichera automatiquement ci-dessous.
+Captures réalisées avec tous les services lancés (images dans le dossier `captures/`).
+Pour les captures encore manquantes (H2, circuit breaker, Telegram), enregistrer l'image
+dans `captures/` avec le nom indiqué puis décommenter la ligne correspondante.
 
 ### 1. Eureka — services enregistrés
 
@@ -134,7 +135,7 @@ avec le nom indiqué : l'image s'affichera automatiquement ci-dessous.
 
 🔗 http://localhost:8057/h2-console — JDBC URL : `jdbc:h2:mem:accounts-db`, user `sa`, mot de passe vide
 
-![Console H2](captures/08-h2-console.png)
+<!-- ![Console H2](captures/08-h2-console.png) -->
 
 ### 4. Circuit breaker (fallback OpenFeign)
 
@@ -144,7 +145,7 @@ Arrêter **customer-service**, puis rouvrir :
 
 À voir : `"customer": {"name": "NoName", "email": "noEmail"}` au lieu d'une erreur 500.
 
-![Fallback circuit breaker](captures/09-circuit-breaker-fallback.png)
+<!-- ![Fallback circuit breaker](captures/09-circuit-breaker-fallback.png) -->
 
 > Relancer customer-service ensuite (et attendre ~30 s qu'il réapparaisse dans Eureka).
 
@@ -168,6 +169,8 @@ npx @modelcontextprotocol/inspector
 
 Dans l'interface : *Transport Type* = `Streamable HTTP`, *URL* = `http://localhost:8056/mcp`,
 cliquer **Connect** puis **List Tools** (refaire avec `http://localhost:8057/mcp`).
+
+Captures ci-dessous : réponse JSON-RPC `tools/list` de chaque serveur MCP.
 
 ![Outils MCP customer-service](captures/12-mcp-customer-tools.png)
 
@@ -205,7 +208,7 @@ Lancer le chatbot avec la variable `TELEGRAM_BOT_TOKEN`, ouvrir le bot dans Tele
 (lien `https://t.me/<nom_du_bot>` donné par BotFather), envoyer `/start` puis une question,
 par exemple *« Liste les comptes du client 2 »*.
 
-![Conversation Telegram](captures/19-telegram.png)
+<!-- ![Conversation Telegram](captures/19-telegram.png) -->
 
 ---
 
