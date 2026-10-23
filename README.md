@@ -4,6 +4,8 @@ Projet microservices Spring Boot 4 / Spring Cloud 2025.1 avec un chatbot IA (Spr
 qui interroge les microservices via le protocole **MCP** (Model Context Protocol, Streamable HTTP)
 et qui répond en REST et sur **Telegram**.
 
+Ce README décrit le **backend**. Le frontend Angular est documenté à part : [frontend/README.md](frontend/README.md).
+
 ## Architecture
 
 ```
@@ -33,7 +35,7 @@ et qui répond en REST et sur **Telegram**.
 | `customer-service` | 8056 | Gestion des clients (JPA/H2) + serveur MCP |
 | `ebank-service` | 8057 | Comptes bancaires (JPA/H2), appelle customer-service via OpenFeign + Resilience4j, serveur MCP |
 | `ebank-chatbot-service` | 8058 | Agent IA (Spring AI + Ollama ou Groq), client MCP, REST `/chat` et bot Telegram |
-| `gateway-service` | 9999 | Point d'entrée unique, routes automatiques via Eureka |
+| `gateway-service` | 9999 | Point d'entrée unique, routes automatiques via Eureka, CORS pour le frontend |
 
 ### Outils MCP exposés
 
