@@ -1,0 +1,19 @@
+<header class="topbar">
+  <a class="brand" routerLink="/">eBank</a>
+  <nav>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Tableau de bord</a>
+    <a routerLink="/customers" routerLinkActive="active">Clients</a>
+    <a routerLink="/accounts" routerLinkActive="active">Comptes</a>
+    <a routerLink="/chat" routerLinkActive="active">Assistant IA</a>
+  </nav>
+</header>
+
+<main>
+  <router-outlet />
+</main>
+
+<div class="toasts">
+  @for (n of notifications.items(); track n.id) {
+    <div class="toast" [class.success]="n.kind === 'success'" (click)="notifications.dismiss(n.id)">{{ n.text }}</div>
+  }
+</div>
