@@ -92,7 +92,7 @@ des réponses de l'agent.
 ## Captures d'écran
 
 Captures réalisées avec tous les services lancés (images dans le dossier `captures/`).
-Pour les captures encore manquantes (H2, Telegram), enregistrer l'image
+Pour les captures encore manquantes (Telegram), enregistrer l'image
 dans `captures/` avec le nom indiqué puis décommenter la ligne correspondante.
 
 ### 1. Eureka — services enregistrés
@@ -135,7 +135,7 @@ dans `captures/` avec le nom indiqué puis décommenter la ligne correspondante.
 
 🔗 http://localhost:8057/h2-console — JDBC URL : `jdbc:h2:mem:accounts-db`, user `sa`, mot de passe vide
 
-<!-- ![Console H2](captures/08-h2-console.png) -->
+![Console H2](captures/08-h2-console.png)
 
 ### 4. Circuit breaker (fallback OpenFeign)
 
